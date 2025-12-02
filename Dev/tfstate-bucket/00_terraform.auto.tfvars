@@ -1,0 +1,11 @@
+aws_profile   = "" # Use empty when using OIDC - terraform-sso
+enable_kms   = true
+region     = "eu-central-1"
+bucket_name ="tfstate-for-ecs-app"
+pipeline_oidc_provider_arn ="arn:aws:iam::121935934245:oidc-provider/token.actions.githubusercontent.com"
+pipeline_oidc_subjects ="repo:mikolajbb2002/eks_cluster_terraform/*"
+dynamodb_table_name = "terraform-lock-table"
+billing_mode = "PAY_PER_REQUEST"
+hash_key = "LockID"
+dynamodb_attribute_name = "LockID"
+dynamodb_attribute_type = "S"
