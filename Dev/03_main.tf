@@ -16,6 +16,8 @@ module "network" {
   az2                    = var.az2
   public_subnet_az1_cidr = var.public_subnet_az1_cidr
   public_subnet_az2_cidr = var.public_subnet_az2_cidr
+  private_subnet_az1_cidr = var.private_subnet_az1_cidr
+  private_subnet_az2_cidr = var.private_subnet_az2_cidr
   destination_cidr_block = var.destination_cidr_block
 }
 
@@ -29,7 +31,7 @@ module "eks_cluster" {
   source = "./modules/eks_cluster"
 
   aws_eks_cluster_name = var.aws_eks_cluster_name
-  cluster_subnet_ids   = module.network.public_subnet_ids
+  cluster_subnet_ids   = module.network.private_subnet_ids
   cluster_name          = var.aws_eks_cluster_name
   aws_eks_node_group      = var.aws_eks_node_group
   node_group_desired_size = var.node_group_desired_size
@@ -38,7 +40,7 @@ module "eks_cluster" {
   node_instance_type      = var.node_instance_type
   node_ami_type           = var.node_ami_type
   node_disk_size          = var.node_disk_size
-  subnet_ids              = module.network.public_subnet_ids
+  subnet_ids              = module.network.private_subnet_ids
   cluster_role_arn        = module.roles.cluster_role_arn
   node_role_arn           = module.roles.node_role_arn
 

@@ -39,9 +39,9 @@ resource "aws_route_table_association" "public_az2" {
 # Create private subnet with cidr defined in 03_main
 resource "aws_subnet" "private_az1" {
   vpc_id                  = aws_vpc.main.id
-  cidr_block              = var.public_subnet_az1_cidr
+  cidr_block              = var.private_subnet_az1_cidr
   availability_zone       = var.az1
-  map_public_ip_on_launch = true
+  map_public_ip_on_launch = false
 
   tags = merge(var.tags, {
     Name = "${var.vpc_name}-private-az1"
@@ -52,9 +52,9 @@ resource "aws_subnet" "private_az1" {
 # Create private subnet with cidr defined in 03_main
 resource "aws_subnet" "private_az2" {
   vpc_id                  = aws_vpc.main.id
-  cidr_block              = var.public_subnet_az2_cidr
+  cidr_block              = var.private_subnet_az2_cidr
   availability_zone       = var.az2
-  map_public_ip_on_launch = true
+  map_public_ip_on_launch = false
 
   tags = merge(var.tags, {
     Name = "${var.vpc_name}-private-az2"
