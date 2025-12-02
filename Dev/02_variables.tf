@@ -48,6 +48,14 @@ variable "public_subnet_az2_cidr" {
   description = "CIDR for the public subnet in az2."
   type        = string
 }
+variable "private_subnet_az1_cidr" {
+  description = "CIDR for the private subnet in az1."
+  type        = string
+}
+variable "private_subnet_az2_cidr" {
+  description = "CIDR for the private subnet in az2."
+  type        = string
+}
 
 variable "aws_eks_cluster_name" {
   description = "Name of the EKS cluster."
