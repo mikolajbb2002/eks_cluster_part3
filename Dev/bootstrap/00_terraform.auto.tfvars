@@ -6,6 +6,6 @@ tags = {
   ManagedBy = "Terraform"
 }
 oidc_subjects = [
-  "repo:mikolajbb2002/eks_cluster_terraform:ref:refs/heads/*",
-  "repo:mikolajbb2002/eks_cluster_terraform:pull_request"
+  "repo:mikolajbb2002/eks_part3:*",
+  "repo:mikolajbb2002/eks_part3:pull_request"
 ]

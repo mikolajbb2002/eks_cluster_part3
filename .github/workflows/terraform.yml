@@ -1,4 +1,4 @@
-name: Terrafom CI/CD for EKS Cluster 
+name: Terrafom CI/CD for EKS Cluster
 
 on:
   push:
