@@ -7,7 +7,7 @@ resource "aws_security_group" "ssm_vpc_endpoints" {
     from_port   = 443
     to_port     = 443
     protocol    = "tcp"
-    cidr_blocks = [aws_vpc.this.cidr_block]
+    cidr_blocks = [aws_vpc.main.cidr_block]
   }
   }
 
