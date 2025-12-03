@@ -125,3 +125,13 @@ variable "existing_apply_role_arn" {
     error_message = "Provide existing_apply_role_arn when manage_roles is false."
   }
 }
+
+variable "existing_destroy_role_arn" {
+  description = "Existing IAM role ARN used for terraform destroy when manage_roles is false."
+  type        = string
+  default     = null
+  validation {
+    condition     = var.manage_roles || var.existing_destroy_role_arn != null
+    error_message = "Provide existing_destroy_role_arn when manage_roles is false."
+  }
+}
