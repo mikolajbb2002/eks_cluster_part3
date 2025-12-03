@@ -20,8 +20,8 @@ permissions:
 env:
   TF_VERSION: ${{ vars.TF_VERSION  }}
   TF_WORKDIR: ${{ vars.TF_WORKDIR  }}
-  TF_TFSTATE_BUCKET_DIR: ${{ vars.TF_TFSTATE_BUCKET  }}
-  TF_BOOSTRAP_DIR: ${{ vars.TF_TFSTATE_BUCKET  }}
+  TF_TFSTATE_BUCKET_DIR: Dev/tfstate-bucket
+  TF_BOOSTRAP_DIR: Dev/bootstrap
   TF_region: ${{ vars.TF_REGION  }}
   EKS_CLUSTER_NAME: ${{ vars.EKS_CLUSTER_NAME  }}
   MANIFEST_PATH: ${{ vars.MANIFEST_PATH }}
