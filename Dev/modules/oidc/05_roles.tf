@@ -19,5 +19,5 @@ data "aws_iam_policy_document" "assume_role" {
       identifiers = [local.iam_oidc_provider_arn]
       type        = "Federated"
     }
-  }
+  } 
 }

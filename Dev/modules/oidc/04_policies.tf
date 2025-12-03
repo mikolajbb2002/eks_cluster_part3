@@ -193,4 +193,99 @@ statement {
     actions   = ["sts:GetCallerIdentity"]
     resources = ["*"]
   }
+<<<<<<< Updated upstream
 }
+=======
+}
+
+
+
+data "aws_iam_policy_document" "destroy_permissions" {
+
+  # alb grants 
+
+  statement {
+    effect = "Allow"
+    actions = [
+      "elasticloadbalancing:*",
+    ]
+    resources = ["*"]
+  }
+
+statement {
+  effect = "Allow" 
+    actions = [
+      "dynamodb:*",
+    ]
+    resources = ["*"]
+  }
+
+statement {
+    effect = "Allow"
+    actions = [
+      "ec2:*",
+    ]
+    resources = ["*"]
+}
+  #Full grants for kms keys except deletion operation defined in statement below
+
+  statement {
+    effect = "Allow"
+    actions = [
+      "kms:*"
+    ]
+    resources = length(var.apply_kms_key_arns) > 0 ? var.apply_kms_key_arns : ["*"]
+  }
+
+  # S3 access for state bucket and other artifacts
+
+  statement {
+    effect = "Allow"
+    actions = [
+      "s3:*"
+    ]
+    resources = length(var.apply_s3_resource_arns) > 0 ? var.apply_s3_resource_arns : ["*"]
+  }
+
+  # IAM grants required to manage execution roles and OIDC providers
+
+  statement {
+    effect = "Allow"
+    actions = [
+      "iam:*",
+    ]
+    resources = ["*"]
+  }
+
+   statement {
+    effect = "Allow"
+    actions = [
+      "eks:*",
+    ]
+    resources = ["*"]
+  }
+
+
+  # full access to policies but only for plan and apply roles
+
+  statement {
+    effect = "Allow"
+    actions = [
+      "iam:*"
+    ]
+    resources = [
+      local.plan_role_arn,
+      local.apply_role_arn
+    ]
+  }
+
+  #Allow role to GetCallerIdentity 
+
+  statement {
+    effect    = "Allow"
+    actions   = ["sts:GetCallerIdentity"]
+    resources = ["*"]
+  }
+}
+
+>>>>>>> Stashed changes

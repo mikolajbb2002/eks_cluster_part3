@@ -101,7 +101,7 @@ variable "oidc_thumbprints" {
 }
 
 variable "oidc_additional_client_ids" {
-  description = "Additional client IDs allowed for the provider (STS is always included)"
+  description = "Additional client IDs allowed for the provider (STS is  always included)"
   type        = list(string)
   default     = []
 }
