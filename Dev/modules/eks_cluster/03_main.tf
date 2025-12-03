@@ -12,7 +12,7 @@ resource "aws_eks_cluster" "main" {
 }
 
 resource "aws_eks_node_group" "example" {
-  cluster_name    = var.cluster_name
+  cluster_name    = aws_eks_cluster.main.name
   node_group_name = var.aws_eks_node_group
   node_role_arn   = var.node_role_arn
   subnet_ids      = var.subnet_ids
@@ -31,4 +31,5 @@ resource "aws_eks_node_group" "example" {
     max_unavailable = 1
   }
 
+  depends_on = [aws_eks_cluster.main]
 }

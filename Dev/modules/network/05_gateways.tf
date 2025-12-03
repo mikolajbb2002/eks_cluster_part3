@@ -6,7 +6,8 @@ resource "aws_internet_gateway" "main" {
 }
 
 resource "aws_nat_gateway" "az1" {
-    subnet_id = aws_subnet.public_az1.id
+    allocation_id = aws_eip.nat_az1.id
+    subnet_id     = aws_subnet.public_az1.id
 
     tags = merge (var.tags, {
         Name = "${var.vpc_name}-nat-az1"
@@ -14,7 +15,8 @@ resource "aws_nat_gateway" "az1" {
 }
 
 resource "aws_nat_gateway" "az2" {
-    subnet_id = aws_subnet.public_az1.id
+    allocation_id = aws_eip.nat_az2.id
+    subnet_id     = aws_subnet.public_az2.id
     
     tags = merge (var.tags, {
         Name = "${var.vpc_name}-nat-az2"
