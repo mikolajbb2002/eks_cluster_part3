@@ -108,19 +108,34 @@ jobs:
           uses: azure/setup-kubectl@v4
           with:
             version: v1.30.3
-        - name: Configure kubeconfig for EKS 
+        - name: Configure kubeconfig for EKS
           run: aws eks update-kubeconfig --region ${{ env.TF_region }} --name ${{ env.EKS_CLUSTER_NAME }}
         - name: Deploy workload to EKS
           run: kubectl apply -f ${{ env.TF_WORKDIR }}/${{env.MANIFEST_PATH }}
-  # destroy:
-  #   name: Terraform Destroy
-  #   runs-on: ubuntu-latest
-  #   if: github.event.inputs.action == 'destroy' && (github.event_name != 'pull_request')
-  #   env:
-  #       DESTROY_ROLE_ARN: ${{ secrets.DESTROY_ROLE_ARN }}
-  #       TF_VAR_aws_profile: ""
-  #   # steps:
-  #   #     - name: terraform init              
-  #   #       run: terraform -chdir="${{env.TF_WORKDIR}}" init -input=false
-  #   #     - name: terraform destroy           
-  #   #       run: terraform -chdir="${{env.TF_WORKDIR}}" destroy -auto-approve   
+  destroy:
+    name: Terraform Destroy
+    runs-on: ubuntu-latest
+    if: github.event.inputs.action == 'destroy' && (github.event_name != 'pull_request')
+    env:
+        DESTROY_ROLE_ARN: ${{ secrets.DESTROY_ROLE_ARN }}
+        TF_VAR_aws_profile: ""
+    steps:
+        - uses: actions/checkout@v4
+        - name: Setup Terraform
+          uses: hashicorp/setup-terraform@v3
+          with:
+            terraform_version: ${{env.TF_VERSION }}
+        - name: Configure AWS credentials
+          uses: aws-actions/configure-aws-credentials@v4
+          with:
+            role-to-assume: ${{ secrets.DESTROY_ROLE_ARN }}
+            role-session-name: GitHubActions-TerraformDestroy
+            aws-region: ${{ env.TF_region }}
+        - name: Configure kubeconfig for EKS
+          run: aws eks update-kubeconfig --region ${{ env.TF_region }} --name ${{ env.EKS_CLUSTER_NAME }}
+        - name: Delete workload from EKS
+          run: kubectl delete --ignore-not-found -f ${{ env.TF_WORKDIR }}/${{env.MANIFEST_PATH }}
+        - name: terraform init              
+          run: terraform -chdir="${{env.TF_WORKDIR}}" init -input=false
+        - name: terraform destroy           
+          run: terraform -chdir="${{env.TF_WORKDIR}}" destroy -auto-approve   

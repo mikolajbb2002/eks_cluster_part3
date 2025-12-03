@@ -193,9 +193,6 @@ statement {
     actions   = ["sts:GetCallerIdentity"]
     resources = ["*"]
   }
-<<<<<<< Updated upstream
-}
-=======
 }
 
 
@@ -288,4 +285,3 @@ statement {
   }
 }
 
->>>>>>> Stashed changes

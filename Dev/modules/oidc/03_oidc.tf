@@ -21,6 +21,7 @@ locals {
 locals {
   plan_role_arn  = var.manage_roles ? aws_iam_role.plan[0].arn : var.existing_plan_role_arn
   apply_role_arn = var.manage_roles ? aws_iam_role.apply[0].arn : var.existing_apply_role_arn
+  destroy_role_arn = var.manage_roles ? aws_iam_role.destroy[0].arn : var.existing_destroy_role_arn
 }
 
 resource "aws_iam_role" "plan" {
