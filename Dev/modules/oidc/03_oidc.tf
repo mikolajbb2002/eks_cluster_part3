@@ -56,3 +56,21 @@ resource "aws_iam_role_policy" "apply" {
   role   = aws_iam_role.apply[count.index].id
   policy = data.aws_iam_policy_document.apply_permissions.json
 }
+
+#Create role for terraform apply 
+
+resource "aws_iam_role" "destroy" {
+  count              = var.manage_roles ? 1 : 0
+  name               = "${local.role_name_prefix}-destroy"
+  assume_role_policy = data.aws_iam_policy_document.assume_role.json
+  tags               = local.common_tags
+}
+
+#Add policy for apply
+
+resource "aws_iam_role_policy" "destroy" {
+  count  = var.manage_roles ? 1 : 0
+  name   = "destroy-permissions"
+  role   = aws_iam_role.destroy[count.index].id
+  policy = data.aws_iam_policy_document.destroy_permissions.json
+} 

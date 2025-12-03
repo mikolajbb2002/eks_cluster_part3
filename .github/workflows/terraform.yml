@@ -108,7 +108,7 @@ jobs:
           uses: azure/setup-kubectl@v4
           with:
             version: v1.30.3
-        - name: Configure kubeconfig for EKS
+        - name: Configure kubeconfig for EKS 
           run: aws eks update-kubeconfig --region ${{ env.TF_region }} --name ${{ env.EKS_CLUSTER_NAME }}
         - name: Deploy workload to EKS
           run: kubectl apply -f ${{ env.TF_WORKDIR }}/${{env.MANIFEST_PATH }}
