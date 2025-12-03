@@ -12,6 +12,7 @@ on:
           type: choice
           options:
             - apply
+            - tfstate bucket/bootstrap
 permissions:
   id-token: write
   contents: read
@@ -19,6 +20,8 @@ permissions:
 env:
   TF_VERSION: ${{ vars.TF_VERSION  }}
   TF_WORKDIR: ${{ vars.TF_WORKDIR  }}
+  TF_TFSTATE_BUCKET_DIR: ${{ vars.TF_TFSTATE_BUCKET  }}
+  TF_BOOSTRAP_DIR: ${{ vars.TF_TFSTATE_BUCKET  }}
   TF_region: ${{ vars.TF_REGION  }}
   EKS_CLUSTER_NAME: ${{ vars.EKS_CLUSTER_NAME  }}
   MANIFEST_PATH: ${{ vars.MANIFEST_PATH }}
@@ -27,6 +30,24 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  tfstate_bucket:
+    name: Backend Bucket Setup /Boostrap OIDC 
+    runs-on: ubuntu-latest
+    if: github.event.inputs.action == 'tfstate bucket/bootstrap' && (github.event_name != 'pull_request')
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ${{env.TF_VERSION }}
+      - name: terraform init for tfstate bucket
+        run: terraform -chdir="${{env.TF_TFSTATE_BUCKET_DIR}}" init -input=false 
+      - name: terraform apply for tfstate bucket
+        run: terraform -chdir="${{env.TF_TFSTATE_BUCKET_DIR}}" apply -auto-approve -input=false
+      - name: terraform init for bootstrap OIDC
+        run: terraform -chdir="${{env.TF_BOOSTRAP_DIR}}" init -input=false
+      - name: terraform apply for bootstrap OIDC
+        run: terraform -chdir="${{env.TF_BOOSTRAP_DIR}}" apply -auto-approve -input=false
   validate: 
     name: fmt init validate
     runs-on: ubuntu-latest
@@ -45,7 +66,7 @@ jobs:
   plan:
     name: Terraform Plan
     runs-on: ubuntu-latest
-    needs: validate
+    needs: [validate, tfstate_bucket]
     if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.fork == false
     env:
         PLAN_ROLE_ARN: ${{ secrets.PLAN_ROLE_ARN }}
