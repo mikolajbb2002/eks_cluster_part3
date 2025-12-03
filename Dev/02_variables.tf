@@ -137,6 +137,12 @@ variable "oidc_apply_role_arn" {
   type        = string
 }
 
+variable "oidc_destroy_role_arn" {
+  description = "Existing IAM role ARN used for terraform destroy (if provided)."
+  type        = string
+  
+}
+
 variable "oidc_subjects" {
   description = "List of OIDC subjects allowed to assume roles."
   type        = list(string)
