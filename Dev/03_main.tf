@@ -11,6 +11,7 @@ locals {
 module "network" {
   source = "./modules/network"
   vpc_cidr_block         = var.vpc_cidr_block
+  region = var.region
   vpc_name               = var.vpc_name
   az1                    = var.az1
   az2                    = var.az2
@@ -59,6 +60,14 @@ module "oidc" {
   existing_plan_role_arn  = var.oidc_plan_role_arn
   existing_apply_role_arn = var.oidc_apply_role_arn
   oidc_subjects           = var.oidc_subjects
+}
+
+module "bastion" {
+  source = "./modules/bastion"
+  vpc_id           = module.network.vpc_id
+  private_subnet_id = module.network.private_subnet_ids[0] # albo inne prywatne
+  tags             = var.tags
+  iam_instance_profile = module.roles.bastion_instance_profile_name
 }
 
 terraform {
