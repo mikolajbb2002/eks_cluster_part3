@@ -44,4 +44,7 @@ variable "private_subnet_az2_cidr" {
   type        = string
 }
 
-
+variable "region" {
+  description = "Deployment region (e.g., eu-central-1)"
+  type        = string
+}
