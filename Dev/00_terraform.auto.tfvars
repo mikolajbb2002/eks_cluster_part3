@@ -32,11 +32,14 @@ tags = {
   Env     = "dev"
 }
 
-create_oidc_provider = false
-oidc_provider_arn    = ""
-oidc_manage_roles    = false
-oidc_plan_role_arn   = ""
-oidc_apply_role_arn  = ""
-oidc_subjects        = []
-
+create_oidc_provider  = true
+oidc_provider_arn     = ""
+oidc_manage_roles     = true
+oidc_plan_role_arn    = ""
+oidc_apply_role_arn   = ""
+oidc_destroy_role_arn = ""
+oidc_subjects         = [
+  "repo:mikolajbb2002/eks_cluster_part3:ref:refs/heads/*",
+  "repo:mikolajbb2002/eks_cluster_part3:ref:refs/pull/*/merge"
+]
 

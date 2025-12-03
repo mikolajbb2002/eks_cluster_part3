@@ -59,6 +59,7 @@ module "oidc" {
   manage_roles            = var.oidc_manage_roles
   existing_plan_role_arn  = var.oidc_plan_role_arn
   existing_apply_role_arn = var.oidc_apply_role_arn
+  existing_destroy_role_arn = var.oidc_destroy_role_arn
   oidc_subjects           = var.oidc_subjects
 }
 
