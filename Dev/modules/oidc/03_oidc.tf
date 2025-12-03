@@ -12,9 +12,14 @@ resource "aws_iam_openid_connect_provider" "github" {
   thumbprint_list = var.oidc_thumbprints
 }
 
+data "aws_iam_openid_connect_provider" "existing" {
+  count = var.create_oidc_provider ? 0 : 1
+  url   = local.oidc_provider_url
+}
+
 # Switch arn for provider which is used, add prefix used to build aud and sub keys
 locals {
-  iam_oidc_provider_arn     = var.create_oidc_provider ? aws_iam_openid_connect_provider.github[0].arn : var.oidc_provider_arn
+  iam_oidc_provider_arn     = var.create_oidc_provider ? aws_iam_openid_connect_provider.github[0].arn : coalesce(var.oidc_provider_arn, data.aws_iam_openid_connect_provider.existing[0].arn)
   iam_oidc_condition_prefix = "${local.oidc_provider_host}:"
 }
 
