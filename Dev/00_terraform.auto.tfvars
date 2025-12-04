@@ -37,6 +37,7 @@ oidc_provider_arn    = ""
 oidc_manage_roles    = false
 oidc_plan_role_arn   = ""
 oidc_apply_role_arn  = ""
+oidc_destroy_role_arn = ""
 oidc_subjects        = []
 
 
