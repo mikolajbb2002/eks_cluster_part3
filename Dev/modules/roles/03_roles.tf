@@ -67,9 +67,25 @@ resource "aws_iam_role" "bastion_role" {
   })
 
 }
-resource "aws_iam_role_policy_attachment" "bastion_eks_readonly" {
-  role       = aws_iam_role.bastion_role.name
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSReadOnlyAccess"
+
+resource "aws_iam_role_policy" "bastion_eks_read" {
+  name = "bastion-eks-read"
+  role = aws_iam_role.bastion_role.id
+  policy = jsonencode({
+    Version   = "2012-10-17"
+    Statement = [
+      {
+        Effect   = "Allow"
+        Action   = [
+          "eks:DescribeCluster",
+          "eks:ListClusters",
+          "eks:ListNodegroups",
+          "eks:DescribeNodegroup"
+        ]
+        Resource = "*"
+      }
+    ]
+  })
 }
 
 resource "aws_iam_role_policy_attachment" "ssm_core" {
