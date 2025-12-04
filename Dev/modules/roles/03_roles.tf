@@ -67,6 +67,10 @@ resource "aws_iam_role" "bastion_role" {
   })
 
 }
+resource "aws_iam_role_policy_attachment" "bastion_eks_readonly" {
+  role       = aws_iam_role.bastion_role.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSReadOnlyAccess"
+}
 
 resource "aws_iam_role_policy_attachment" "ssm_core" {
   role       = aws_iam_role.bastion_role.name
