@@ -16,7 +16,6 @@ resource "aws_eks_cluster" "main" {
 }
 
 resource "aws_security_group_rule" "eks_api_from_bastion" {
-  count                    = var.bastion_security_group_id == null ? 0 : 1
   type                     = "ingress"
   from_port                = 443
   to_port                  = 443

@@ -66,7 +66,6 @@ variable "node_role_arn" {
 variable "bastion_security_group_id" {
   description = "Security group ID of the bastion host allowed to reach the EKS API."
   type        = string
-  default     = null
 }
 
 variable "bastion_role_arn" {
