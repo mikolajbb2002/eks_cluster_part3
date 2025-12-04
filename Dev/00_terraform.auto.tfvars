@@ -33,11 +33,10 @@ tags = {
 }
 
 create_oidc_provider = false
-oidc_provider_arn    = ""
+oidc_provider_arn    = "arn:aws:iam::121935934245:oidc-provider/token.actions.githubusercontent.com"
 oidc_manage_roles    = false
-oidc_plan_role_arn   = ""
-oidc_apply_role_arn  = ""
-oidc_destroy_role_arn = ""
+oidc_plan_role_arn   = "arn:aws:iam::121935934245:role/nginx-app-eu-central-1-dev-plan"
+oidc_apply_role_arn  = "arn:aws:iam::121935934245:role/nginx-app-eu-central-1-dev-apply"
+oidc_destroy_role_arn = "arn:aws:iam::121935934245:role/nginx-app-eu-central-1-dev-destroy"
 oidc_subjects        = []
-
 
