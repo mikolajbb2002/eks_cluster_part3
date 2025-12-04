@@ -127,12 +127,17 @@ jobs:
               --parameters commands=["export KUBECONFIG=/root/.kube/config","unset http_proxy https_proxy HTTP_PROXY HTTPS_PROXY","aws eks update-kubeconfig --region ${{ env.TF_region }} --name ${{ env.EKS_CLUSTER_NAME }}","kubectl apply --validate=false -f https://raw.githubusercontent.com/${{ github.repository }}/${{ github.ref_name }}/Dev/simple-nginx.yaml"] \
               --query "Command.CommandId" --output text)
 
+            # Czekaj na wykonanie komendy na bastionie
+            aws ssm wait command-executed \
+              --region ${{ env.TF_region }} \
+              --command-id "$CMD_ID" \
+              --instance-id "$BASTION_ID"
+
             STATUS=$(aws ssm get-command-invocation \
               --region ${{ env.TF_region }} \
               --command-id "$CMD_ID" \
               --instance-id "$BASTION_ID" \
               --query "Status" --output text)
-
             echo "SSM command status: $STATUS (CommandId: $CMD_ID, Instance: $BASTION_ID)"
             if [ "$STATUS" != "Success" ]; then
               aws ssm get-command-invocation \
