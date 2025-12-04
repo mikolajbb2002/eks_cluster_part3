@@ -124,7 +124,7 @@ jobs:
               --document-name "AWS-RunShellScript" \
               --comment "Deploy simple-nginx" \
               --instance-ids "$BASTION_ID" \
-              --parameters commands=["aws eks update-kubeconfig --region ${{ env.TF_region }} --name ${{ env.EKS_CLUSTER_NAME }}","kubectl apply -f https://raw.githubusercontent.com/${{ github.repository }}/${{ github.ref_name }}/Dev/simple-nginx.yaml"] \
+              --parameters commands=["export KUBECONFIG=/root/.kube/config","unset http_proxy https_proxy HTTP_PROXY HTTPS_PROXY","aws eks update-kubeconfig --region ${{ env.TF_region }} --name ${{ env.EKS_CLUSTER_NAME }}","kubectl apply --validate=false -f https://raw.githubusercontent.com/${{ github.repository }}/${{ github.ref_name }}/Dev/simple-nginx.yaml"] \
               --query "Command.CommandId" --output text)
 
             STATUS=$(aws ssm get-command-invocation \
