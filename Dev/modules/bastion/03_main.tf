@@ -49,12 +49,17 @@ systemctl enable amazon-ssm-agent
 systemctl restart amazon-ssm-agent
 
 # awscli v2
-curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-unzip -o awscliv2.zip
-./aws/install
+cd /tmp
+sudo yum install -y unzip curl
+curl -O "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip"
+unzip -o awscli-exe-linux-x86_64.zip
+sudo ./aws/install -i /usr/local/aws -b /usr/bin
 
 # kubectl (amd64)
-curl -L "https://dl.k8s.io/release/v1.30.3/bin/linux/amd64/kubectl" -o /usr/local/bin/kubectl
-chmod +x /usr/local/bin/kubectl
+curl -LO "https://dl.k8s.io/release/v1.30.3/bin/linux/amd64/kubectl"
+sudo install -m 0755 kubectl /usr/bin/kubectl
+
+aws eks update-kubeconfig --region eu-central-1 --name eks-cluster
+
 EOF
 }
