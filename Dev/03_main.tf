@@ -44,6 +44,7 @@ module "eks_cluster" {
   subnet_ids              = module.network.private_subnet_ids
   cluster_role_arn        = module.roles.cluster_role_arn
   node_role_arn           = module.roles.node_role_arn
+  bastion_security_group_id = module.bastion.security_group_id
 
 }
 

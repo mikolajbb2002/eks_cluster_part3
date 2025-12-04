@@ -11,6 +11,17 @@ resource "aws_eks_cluster" "main" {
   }
 }
 
+resource "aws_security_group_rule" "eks_api_from_bastion" {
+  count                    = var.bastion_security_group_id == null ? 0 : 1
+  type                     = "ingress"
+  from_port                = 443
+  to_port                  = 443
+  protocol                 = "tcp"
+  source_security_group_id = var.bastion_security_group_id
+  security_group_id        = aws_eks_cluster.main.vpc_config[0].cluster_security_group_id
+}
+
+
 resource "aws_eks_node_group" "example" {
   cluster_name    = aws_eks_cluster.main.name
   node_group_name = var.aws_eks_node_group
