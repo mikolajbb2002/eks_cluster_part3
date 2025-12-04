@@ -5,6 +5,7 @@
 # Terraform state files
 terraform.tfstate
 terraform.tfstate.*
+terraform.tfstate.backup
 
 # CLI configuration overrides
 terraform.rc
