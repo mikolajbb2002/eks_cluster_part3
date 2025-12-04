@@ -140,7 +140,6 @@ variable "oidc_apply_role_arn" {
 variable "oidc_destroy_role_arn" {
   description = "Existing IAM role ARN used for terraform destroy (if provided)."
   type        = string
-  
 }
 
 variable "oidc_subjects" {
