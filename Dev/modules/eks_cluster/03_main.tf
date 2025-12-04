@@ -51,14 +51,12 @@ resource "aws_eks_node_group" "example" {
 
 # Grant bastion role cluster-admin via EKS Access Entries
 resource "aws_eks_access_entry" "bastion" {
-  count         = var.bastion_role_arn == null ? 0 : 1
   cluster_name  = aws_eks_cluster.main.name
   principal_arn = var.bastion_role_arn
   type          = "STANDARD"
 }
 
 resource "aws_eks_access_policy_association" "bastion_admin" {
-  count         = var.bastion_role_arn == null ? 0 : 1
   cluster_name  = aws_eks_cluster.main.name
   principal_arn = var.bastion_role_arn
   policy_arn    = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
@@ -66,6 +64,4 @@ resource "aws_eks_access_policy_association" "bastion_admin" {
   access_scope {
     type = "cluster"
   }
-
-  depends_on = [aws_eks_access_entry.bastion]
 }

@@ -72,5 +72,4 @@ variable "bastion_security_group_id" {
 variable "bastion_role_arn" {
   description = "IAM role ARN for bastion host, granted EKS access entry."
   type        = string
-  default     = null
 }
