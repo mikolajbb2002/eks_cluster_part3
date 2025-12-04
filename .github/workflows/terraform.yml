@@ -110,12 +110,39 @@ jobs:
             version: v1.30.3
         - name: Deploy via SSM on bastion
           run: |
-            aws ssm send-command \
+            set -e
+            BASTION_ID=$(aws ec2 describe-instances \
+              --region ${{ env.TF_region }} \
+              --filters "Name=tag:Name,Values=eks-bastion" "Name=instance-state-name,Values=running" \
+              --query "Reservations[].Instances[].InstanceId" --output text)
+            if [ -z "$BASTION_ID" ] || [ "$BASTION_ID" = "None" ]; then
+              echo "No running bastion instance found"; exit 1
+            fi
+
+            CMD_ID=$(aws ssm send-command \
               --region ${{ env.TF_region }} \
               --document-name "AWS-RunShellScript" \
               --comment "Deploy simple-nginx" \
-              --targets "Key=tag:Name,Values=eks-bastion" \
-              --parameters commands=["aws eks update-kubeconfig --region ${{ env.TF_region }} --name ${{ env.EKS_CLUSTER_NAME }}","kubectl apply -f https://raw.githubusercontent.com/${{ github.repository }}/${{ github.ref_name }}/Dev/simple-nginx.yaml"]
+              --instance-ids "$BASTION_ID" \
+              --parameters commands=["aws eks update-kubeconfig --region ${{ env.TF_region }} --name ${{ env.EKS_CLUSTER_NAME }}","kubectl apply -f https://raw.githubusercontent.com/${{ github.repository }}/${{ github.ref_name }}/Dev/simple-nginx.yaml"] \
+              --query "Command.CommandId" --output text)
+
+            STATUS=$(aws ssm get-command-invocation \
+              --region ${{ env.TF_region }} \
+              --command-id "$CMD_ID" \
+              --instance-id "$BASTION_ID" \
+              --query "Status" --output text)
+
+            echo "SSM command status: $STATUS (CommandId: $CMD_ID, Instance: $BASTION_ID)"
+            if [ "$STATUS" != "Success" ]; then
+              aws ssm get-command-invocation \
+                --region ${{ env.TF_region }} \
+                --command-id "$CMD_ID" \
+                --instance-id "$BASTION_ID" \
+                --query "{StdOut:StandardOutputContent,StdErr:StandardErrorContent}" \
+                --output text
+              exit 1
+            fi
   destroy:
     name: Terraform Destroy
     runs-on: ubuntu-latest
