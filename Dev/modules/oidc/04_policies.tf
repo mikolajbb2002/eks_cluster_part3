@@ -60,6 +60,18 @@ data "aws_iam_policy_document" "plan_permissions" {
 #This block defines full privilliges for apply role
 data "aws_iam_policy_document" "apply_permissions" {
 
+# SSM grants for eks managed nodegroups3
+statement {
+  effect = "Allow"
+  actions = [
+    "ssm:SendCommand",
+    "ssm:GetCommandInvocation",
+    "ssm:ListCommandInvocations"
+  ]
+  resources = ["*"]
+}
+
+
   # application-autoscaling grants 
   statement {
     effect = "Allow"
