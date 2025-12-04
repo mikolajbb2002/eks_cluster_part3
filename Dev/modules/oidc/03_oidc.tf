@@ -12,6 +12,11 @@ resource "aws_iam_openid_connect_provider" "github" {
   thumbprint_list = var.oidc_thumbprints
 }
 
+data "aws_iam_openid_connect_provider" "existing" {
+  count = var.create_oidc_provider ? 0 : 1
+  url   = local.oidc_provider_url
+}
+
 # Switch arn for provider which is used, add prefix used to build aud and sub keys
 locals {
   iam_oidc_provider_arn      = var.create_oidc_provider ? aws_iam_openid_connect_provider.github[0].arn : var.oidc_provider_arn
@@ -25,7 +30,7 @@ locals {
 }
 
 resource "aws_iam_role" "plan" {
-  count              = var.manage_roles ? 1 : 0
+  count              = var.manage_roles && coalesce(var.existing_plan_role_arn, "") == "" ? 1 : 0
   name               = "${local.role_name_prefix}-plan"
   assume_role_policy = data.aws_iam_policy_document.assume_role.json
   tags               = local.common_tags
@@ -43,7 +48,7 @@ resource "aws_iam_role_policy" "plan" {
 #Create role for terraform apply 
 
 resource "aws_iam_role" "apply" {
-  count              = var.manage_roles ? 1 : 0
+  count              = var.manage_roles && coalesce(var.existing_apply_role_arn, "") == "" ? 1 : 0
   name               = "${local.role_name_prefix}-apply"
   assume_role_policy = data.aws_iam_policy_document.assume_role.json
   tags               = local.common_tags
@@ -61,7 +66,7 @@ resource "aws_iam_role_policy" "apply" {
 #Create role for terraform apply 
 
 resource "aws_iam_role" "destroy" {
-  count              = var.manage_roles ? 1 : 0
+  count              = var.manage_roles && coalesce(var.existing_destroy_role_arn, "") == "" ? 1 : 0
   name               = "${local.role_name_prefix}-destroy"
   assume_role_policy = data.aws_iam_policy_document.assume_role.json
   tags               = local.common_tags

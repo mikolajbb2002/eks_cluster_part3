@@ -71,10 +71,6 @@ variable "oidc_provider_arn" {
   description = "Existing OIDC provider ARN (used when create_oidc_provider is false)"
   type        = string
   default     = null
-  validation {
-    condition     = var.create_oidc_provider || var.oidc_provider_arn != null
-    error_message = "Set oidc_provider_arn when create_oidc_provider is false."
-  }
 }
 
 variable "oidc_audience" {
