@@ -3,8 +3,8 @@ terraform {
     aws = {
       source  = "hashicorp/aws"
       version = "~> 6.17"
+    }
   }
-}
 }
 
 provider "aws" {
@@ -14,7 +14,7 @@ provider "aws" {
 }
 
 module "oidc" {
-  source        = "../modules/oidc"
+  source        = "../Dev/modules/oidc"
   project_name  = var.project_name
   environment   = var.environment
   region        = var.region
