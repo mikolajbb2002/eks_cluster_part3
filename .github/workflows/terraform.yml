@@ -108,10 +108,18 @@ jobs:
           uses: azure/setup-kubectl@v4
           with:
             version: v1.30.3
-        - name: Configure kubeconfig for EKS
-          run: aws eks update-kubeconfig --region ${{ env.TF_region }} --name ${{ env.EKS_CLUSTER_NAME }}
-        - name: Deploy workload to EKS
-          run: kubectl apply -f ${{ env.TF_WORKDIR }}/${{env.MANIFEST_PATH }}
+        - name: Deploy via SSM on bastion
+          run: |
+            aws ssm send-command \
+              --region ${{ env.TF_region }} \
+              --document-name "AWS-RunShellScript" \
+              --comment "Deploy simple-nginx" \
+              --targets "Key=tag:Name,Values=eks-bastion" \
+              --parameters commands=["aws eks update-kubeconfig --region ${{ env.TF_region }} --name ${{ env.EKS_CLUSTER_NAME }}","kubectl apply -f https://raw.githubusercontent.com/${{ github.repository }}/${{ github.ref_name }}/Dev/simple-nginx.yaml"]
+            - name: Configure kubeconfig for EKS
+              run: aws eks update-kubeconfig --region ${{ env.TF_region }} --name ${{ env.EKS_CLUSTER_NAME }}
+            - name: Deploy workload to EKS
+              run: kubectl apply -f ${{ env.TF_WORKDIR }}/${{env.MANIFEST_PATH }}
   destroy:
     name: Terraform Destroy
     runs-on: ubuntu-latest

@@ -33,4 +33,22 @@ resource "aws_instance" "bastion" {
   vpc_security_group_ids = [aws_security_group.bastion_sg.id]
 
   tags = merge(var.tags, { Name = "eks-bastion" })
+
+  user_data = <<-EOF
+#!/bin/bash
+set -e
+yum update -y
+yum install -y curl unzip amazon-ssm-agent
+systemctl enable amazon-ssm-agent
+systemctl restart amazon-ssm-agent
+
+# awscli v2
+curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+unzip -o awscliv2.zip
+./aws/install
+
+# kubectl (amd64)
+curl -L "https://dl.k8s.io/release/v1.30.3/bin/linux/amd64/kubectl" -o /usr/local/bin/kubectl
+chmod +x /usr/local/bin/kubectl
+EOF
 }
