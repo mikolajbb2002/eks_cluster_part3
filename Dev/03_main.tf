@@ -45,6 +45,7 @@ module "eks_cluster" {
   cluster_role_arn        = module.roles.cluster_role_arn
   node_role_arn           = module.roles.node_role_arn
   bastion_security_group_id = module.bastion.security_group_id
+  bastion_role_arn          = module.roles.bastion_role_arn
 
 }
 

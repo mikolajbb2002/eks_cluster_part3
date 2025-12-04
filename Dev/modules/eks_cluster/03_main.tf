@@ -9,6 +9,10 @@ resource "aws_eks_cluster" "main" {
 
     subnet_ids = var.cluster_subnet_ids
   }
+
+  access_config {
+    authentication_mode = "API_AND_CONFIG_MAP"
+  }
 }
 
 resource "aws_security_group_rule" "eks_api_from_bastion" {
@@ -43,4 +47,25 @@ resource "aws_eks_node_group" "example" {
   }
 
   depends_on = [aws_eks_cluster.main]
+}
+
+# Grant bastion role cluster-admin via EKS Access Entries
+resource "aws_eks_access_entry" "bastion" {
+  count         = var.bastion_role_arn == null ? 0 : 1
+  cluster_name  = aws_eks_cluster.main.name
+  principal_arn = var.bastion_role_arn
+  type          = "STANDARD"
+}
+
+resource "aws_eks_access_policy_association" "bastion_admin" {
+  count         = var.bastion_role_arn == null ? 0 : 1
+  cluster_name  = aws_eks_cluster.main.name
+  principal_arn = var.bastion_role_arn
+  policy_arn    = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
+
+  access_scope {
+    type = "cluster"
+  }
+
+  depends_on = [aws_eks_access_entry.bastion]
 }
