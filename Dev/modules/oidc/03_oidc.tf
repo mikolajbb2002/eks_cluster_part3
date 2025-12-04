@@ -19,14 +19,14 @@ data "aws_iam_openid_connect_provider" "existing" {
 
 # Switch arn for provider which is used, add prefix used to build aud and sub keys
 locals {
-  iam_oidc_provider_arn     = var.create_oidc_provider ? aws_iam_openid_connect_provider.github[0].arn : coalesce(var.oidc_provider_arn, data.aws_iam_openid_connect_provider.existing[0].arn)
-  iam_oidc_condition_prefix = "${local.oidc_provider_host}:"
+  iam_oidc_provider_arn      = var.create_oidc_provider ? aws_iam_openid_connect_provider.github[0].arn : var.oidc_provider_arn
+  iam_oidc_condition_prefix  = "${local.oidc_provider_host}:"
 }
 
 locals {
-  plan_role_arn     = coalesce(var.existing_plan_role_arn, try(aws_iam_role.plan[0].arn, null))
-  apply_role_arn    = coalesce(var.existing_apply_role_arn, try(aws_iam_role.apply[0].arn, null))
-  destroy_role_arn  = coalesce(var.existing_destroy_role_arn, try(aws_iam_role.destroy[0].arn, null))
+  plan_role_arn    = var.manage_roles ? aws_iam_role.plan[0].arn : var.existing_plan_role_arn
+  apply_role_arn   = var.manage_roles ? aws_iam_role.apply[0].arn : var.existing_apply_role_arn
+  destroy_role_arn = var.manage_roles ? aws_iam_role.destroy[0].arn : var.existing_destroy_role_arn
 }
 
 resource "aws_iam_role" "plan" {
